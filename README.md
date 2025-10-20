@@ -1,20 +1,50 @@
-# p
+# demo_stacks_app
 
-_This is an example stack configuration for Terraform Stacks. 
+This repository contains the **application sidecar Stack** for the HUG workshop.
+It demonstrates how an application Stack can **consume outputs from an upstream infrastructure Stack** (networks and volumes) using Terraform Stacks in HCP Terraform.
 
-This is a stack using two components, two environments, and the `random_pet` and `null_resource`
-resources. The purpose is a no-authentication, state-only test of the stacks concepts. No identity
-tokens are defined for OIDC authentication, no real infrastructure is provisioned, no cost will be
-incurred.
+## Overview
 
-_We do not recommend using this example within production accounts._
+* **Upstream Stack**: [`demo_stacks_infra`](https://github.com/raymonepping/demo_stacks_infra)
+  Provides Docker networks and volumes, and publishes them as outputs.
+* **This Stack**: `demo_stacks_app`
+  Deploys a simple sidecar container (e.g. NGINX or echo service) and consumes the published outputs from the infra Stack.
+* **Deployments**:
 
-## Usage
+  * `development` → sidecar running on dev network/volumes
+  * `production` → sidecar running on prod network/volumes
 
-_Prerequisites: You must have a Terraform Cloud account with access to the private preview of
-Terraform Stacks and a GitHub account._
+## Prerequisites
 
-1. **Fork this repository** to your own GitHub account, such that you can edit this stack configuration
-   for your purposes.
-2. **Create a new stack** in Terraform Cloud and connect it to your forked configuration repository.
-3. **"Provision" away!** Remember, this is a state-only example with no external effects.
+* Terraform **v1.13.x** or newer (Stacks GA requires 1.13+)
+* Access to HCP Terraform with an Agent Pool that has Docker access
+* Cloned upstream repo: [`demo_stacks_infra`](https://github.com/raymonepping/demo_stacks_infra)
+
+## Quickstart
+
+1. Run the bootstrap script (clones both repos, validates, inits):
+
+   ```bash
+   bash setup_stacks.sh ~/work/hug-stacks
+   ```
+2. In HCP Terraform:
+
+   * Create a new Stack and connect it to this repo.
+   * Link it to the upstream `demo_stacks_infra` Stack (via **Settings → Linked Stacks**).
+   * Set execution mode to **Agent** and select your Agent Pool.
+   * Deploy `development` and `production`.
+
+## Local Verification
+
+On the Agent host, after deploy:
+
+```bash
+docker ps --format 'table {{.Names}}\t{{.Ports}}' | grep sidecar
+curl -I http://localhost:9000  # dev
+curl -I http://localhost:9001  # prod
+```
+
+## Notes
+
+* Outputs from the infra Stack (`network_name`, `volume_name`, etc.) are published and consumed here via `upstream_input`.
+* This repo is designed for workshop/demo use, not production.
