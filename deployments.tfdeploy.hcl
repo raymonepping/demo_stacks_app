@@ -1,7 +1,7 @@
 # deployments.tfdeploy.hcl (consumer) — linked via UI
 upstream_input "platform" {
   type = "stack"
-  source = "app.terraform.io/hashicorp/Default Project/demo_stacks_app"
+  source = "app.terraform.io/hashicorp/Default Project/demo_stacks_infra"
 }
 
 deployment "development" {
