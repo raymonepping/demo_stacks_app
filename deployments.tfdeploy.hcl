@@ -5,6 +5,8 @@ upstream_input "platform" {
 
 deployment "development" {
   inputs = {
+    type         = "sidecar"
+    source       = "./sidecar"
     name         = "sidecar-dev"
     host_port    = 9000
     message      = "hello from dev"
@@ -14,6 +16,8 @@ deployment "development" {
 
 deployment "production" {
   inputs = {
+    type        = "sidecar"  
+    source       = "./sidecar"    
     name         = "sidecar-prod"
     host_port    = 9001
     message      = "hello from prod"
