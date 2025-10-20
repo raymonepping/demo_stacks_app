@@ -7,7 +7,7 @@ upstream_input "platform" {
 deployment "development" {
   inputs = {
     name         = "sidecar-dev"
-    host_port    = 9000
+    host_port    = 9010
     message      = "hello from dev"
     network_name = upstream_input.platform.dev_network_name
   }
@@ -16,7 +16,7 @@ deployment "development" {
 deployment "production" {
   inputs = {
     name         = "sidecar-prod"
-    host_port    = 9001
+    host_port    = 9011
     message      = "hello from prod"
     network_name = upstream_input.platform.prod_network_name
   }
